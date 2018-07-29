@@ -9,13 +9,14 @@ GAME RULES:
 
 */
 
-var scores, roundScore, activePlayer, gamePlaying;
+var scores, roundScore, activePlayer, gamePlaying, prevDice;
 var init = function() {
   gamePlaying = true;
   scores = [0,0];
   roundScore = 0;
   activePlayer = 0;
-  //Update the UI
+
+  document.querySelector('.dice').style.display = 'none';
   document.getElementById('score-0').textContent = 0;
   document.getElementById('score-1').textContent = 0;
   document.getElementById('current-0').textContent = 0;
@@ -39,29 +40,25 @@ var nextPlayer = function() {
   roundScore = 0;
 }
 
+//start game
 init();
-
-//hide the dice
-document.querySelector('.dice').style.display = 'none';
-document.getElementById('score-0').textContent = '0';
-document.getElementById('score-1').textContent = '0';
-document.getElementById('current-0').textContent = '0';
-document.getElementById('current-1').textContent = '0';
 
 document.querySelector('.btn-roll').addEventListener('click', function() {
   if (gamePlaying) {
     //1. get random number
     var dice = Math.floor(Math.random() * 6) + 1;
+    console.log(dice, prevDice);
     //2. display the random number
     var diceDOM = document.querySelector('.dice');
     diceDOM.src = 'dice-' + dice + '.png';
     diceDOM.style.display = 'block';
     //3. update the round score if it's not 1
-    if (dice === 1) {
+    if (dice === 1 || dice === 6 && prevDice === 6) {
       nextPlayer();
     } else {
       //Add score to 0
       roundScore += dice;
+      prevDice = dice;
       document.querySelector('#current-' + activePlayer).textContent = roundScore;
     }
   }
